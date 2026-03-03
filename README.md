@@ -105,7 +105,6 @@ To revoke access, use the **Clear Credentials** button in the app, or go to **Te
 ## Notes
 
 - Large public channels may restrict member listing — these will show up as "groups without contact access" in the summary
-- Bio fetching is disabled to keep scans fast
 - Bots are automatically excluded from results
 
 ---
