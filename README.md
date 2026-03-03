@@ -60,6 +60,12 @@ Enter your API ID, API Hash, and phone number on first launch. Credentials are s
 
 ---
 
+## Screenshot
+
+![Results](assets/screenshots/screenshot.png)
+
+---
+
 ## Export Fields
 
 | Field | Description |
