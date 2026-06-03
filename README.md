@@ -1,48 +1,49 @@
 # tg_harvest
 
-> Extract visible contact numbers from your Telegram groups, channels, and DMs — all in one clean desktop app.
+> Extract visible contact numbers from your Telegram groups, channels, and DMs in one clean desktop app.
 
 ![version](https://img.shields.io/badge/version-1.1-00d4aa?style=flat-square)
 ![platform](https://img.shields.io/badge/platform-macOS-lightgrey?style=flat-square)
 ![python](https://img.shields.io/badge/python-3.9+-blue?style=flat-square)
+![stack](https://img.shields.io/badge/stack-Telethon%20%2B%20pywebview-6f42c1?style=flat-square)
 
 ---
+
+![tg_harvest results screen](assets/screenshots/screenshot.png)
 
 ## What it does
 
-Telegram doesn't give you an easy way to see all the contact numbers floating around your chats. `tg_harvest` scans every group, channel, and DM you're in, collects all visible phone numbers, and exports them into a clean CSV or JSON file — with metadata like last seen, mutual contact status, and Premium badge.
+Telegram does not give you a simple way to review the contact numbers visible across your chats. `tg_harvest` connects through Telegram's official API, scans the groups, channels, and DMs available to your account, and exports the visible contact data into CSV or JSON.
 
----
+The app is intentionally direct: enter your Telegram API credentials, run the scan, review the results, apply export filters if needed, and save the file to your Desktop.
 
 ## Features
 
-- 🔍 Scans all groups, channels, and DMs automatically
-- 📱 Extracts visible phone numbers (respects Telegram's privacy settings)
-- 🕐 Shows last seen status for each contact
-- 🤝 Flags mutual contacts vs unsaved contacts
-- ★ Identifies Telegram Premium users
-- 🎛️ Export filters — phone numbers only, or unsaved contacts only
-- 💾 Export to CSV or JSON, saved directly to your Desktop
-- 🔐 Credentials stored locally, never leave your machine
-
----
+- Scans groups, channels, and direct messages from a single desktop window
+- Extracts visible phone numbers while respecting Telegram privacy settings
+- Captures names, usernames, last seen status, Premium status, mutual-contact status, and source chat
+- Excludes bots and avoids duplicate users or duplicate phone numbers
+- Shows scan progress and a final summary, including chats where member access was restricted
+- Exports CSV or JSON directly to the Desktop
+- Supports export filters for phone-number-only and unsaved-contact-only lists
+- Stores Telegram credentials locally with restricted file permissions
+- Includes a clear-credentials action for resetting local config and session files
 
 ## Requirements
 
+- macOS
 - Python 3.9+
 - A Telegram account
-- API credentials from [my.telegram.org](https://my.telegram.org)
+- Telegram API credentials from [my.telegram.org](https://my.telegram.org)
 
----
+## Getting started
 
-## Getting Started
+### 1. Create Telegram API credentials
 
-### 1. Get your Telegram API credentials
-
-1. Go to [my.telegram.org](https://my.telegram.org) and log in
-2. Click **API Development Tools**
-3. Create a new app — fill in any name and description
-4. Copy your **API ID** and **API Hash**
+1. Go to [my.telegram.org](https://my.telegram.org) and sign in.
+2. Open **API Development Tools**.
+3. Create a new app with any name and description.
+4. Copy the generated **API ID** and **API Hash**.
 
 ### 2. Install dependencies
 
@@ -56,67 +57,51 @@ pip3 install telethon pywebview
 python3 main.py
 ```
 
-Enter your API ID, API Hash, and phone number on first launch. Credentials are saved locally so you only need to do this once.
+On first launch, enter your API ID, API Hash, and phone number. If Telegram requires a login code or 2FA password, the app will prompt for it during the first connection.
 
----
-
-## Screenshot
-
-![Results](assets/screenshots/screenshot.png)
-
----
-
-## Export Fields
+## Export fields
 
 | Field | Description |
 |---|---|
 | `first_name` | Contact's first name |
 | `last_name` | Contact's last name |
-| `username` | Telegram @username |
-| `phone` | Phone number (if visible) |
-| `last_seen` | Online / Recently / Last week / Last month / Date |
-| `is_mutual` | Whether they have you saved too |
-| `is_premium` | Whether they're a Telegram Premium subscriber |
-| `source_group` | Which chat they were found in |
+| `username` | Telegram username, when available |
+| `phone` | Visible phone number, when available |
+| `last_seen` | Online, recently, last week, last month, offline date, or unknown |
+| `is_mutual` | Whether the person is marked as a mutual contact |
+| `is_premium` | Whether Telegram reports the user as Premium |
+| `source_group` | The chat where the contact was first found |
 
----
+## Export filters
 
-## Export Filters
+The results screen always starts with the full raw scan. Before exporting, you can narrow the output:
 
-On the results screen you can optionally filter before exporting:
+- **Has visible phone number** keeps only rows with a visible phone number.
+- **Unsaved contacts** keeps only rows that are not marked as mutual contacts.
 
-- **Has visible phone number** — only include contacts where a number was found
-- **Unsaved contacts** — only show people who haven't saved you back (the ones worth adding)
+Both filters can be combined for a tighter outreach or cleanup list.
 
-Both filters are off by default so you always see the full raw data first.
+## Privacy and security
 
----
+- Processing happens locally on your Mac.
+- The app communicates only with Telegram's official API through Telethon.
+- Telegram credentials are saved to `~/.tg_harvest_config.json`; the Telegram session is saved beside `~/.tg_harvest_session`.
+- Phone numbers appear only when Telegram makes them visible to your account.
 
-## Privacy & Security
-
-- All processing happens **locally on your machine**
-- No data is sent to any server — only direct communication with Telegram's official API via Telethon
-- Phone numbers are only visible for users who have set their Telegram privacy to **Everyone** or **My Contacts**
-
-To revoke access, use the **Clear Credentials** button in the app, or go to **Telegram Settings → Devices** and terminate the session manually.
-
----
+To revoke access, click **Clear Credentials** in the app or terminate the session manually from **Telegram Settings > Devices**.
 
 ## Notes
 
-- Large public channels may restrict member listing — these will show up as "groups without contact access" in the summary
-- Bots are automatically excluded from results
+- Some large or private channels restrict participant listing. These are counted in the scan summary rather than treated as fatal errors.
+- Telegram privacy settings still apply. If a user's number is hidden from your account, `tg_harvest` cannot extract it.
+- Exports are timestamped as `tg_contacts_YYYYMMDD_HHMM.csv` or `.json`.
 
----
+## Built with
 
-## Built With
-
-- [Telethon](https://github.com/LonamiWebs/Telethon) — Telegram MTProto API client
-- [pywebview](https://pywebview.flowrl.com/) — Native desktop window with web UI
-- Vanilla HTML/CSS/JS — no frontend frameworks
-
----
+- [Telethon](https://github.com/LonamiWebs/Telethon) for Telegram MTProto access
+- [pywebview](https://pywebview.flowrl.com/) for the native macOS desktop shell
+- Vanilla HTML, CSS, and JavaScript for the interface
 
 ## License
 
-MIT — do whatever you want with it, just don't be weird about it 🙂
+MIT. Use it, adapt it, and keep it respectful.
